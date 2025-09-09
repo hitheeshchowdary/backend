@@ -1,12 +1,10 @@
 import express from "express";
-import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./config/mongo.js";
-import authRoutes from "./routes/authRoutes.js"; // notice the .js extension
+import authRoutes from "./routes/authRoutes.js";
 import eventRoutes from "./routes/eventRoutes.js";
 import memberRoutes from "./routes/memberRoutes.js";
-import { protect } from "./middleware/authMiddleware.js";
 import userRoutes from "./routes/userRoutes.js";
 
 
@@ -17,7 +15,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 connectDB();
-// Routes
+
 app.use("/api/auth", authRoutes);
 app.use("/api/events", eventRoutes);
 app.use("/api/members", memberRoutes);
