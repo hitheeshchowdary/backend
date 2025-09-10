@@ -22,3 +22,4 @@ console.log("Token:", token);
 };
 
 export default protect;
+export { protect };
