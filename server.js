@@ -6,6 +6,7 @@ import authRoutes from "./routes/authRoutes.js";
 import eventRoutes from "./routes/eventRoutes.js";
 import memberRoutes from "./routes/memberRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import leaderBoard from "./routes/leaderboardRoutes.js";
 
 
 
@@ -20,6 +21,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/events", eventRoutes);
 app.use("/api/members", memberRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/leaderboard", leaderBoard);
 
 app.get("/", (req, res) => {
   res.json({ message: "Backend running 🚀" });
