@@ -4,7 +4,6 @@ import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
-// ✅ Middleware to protect routes (require login)
 const authMiddleware = (req, res, next) => {
   const token = req.headers["authorization"];
   if (!token) return res.status(401).json({ message: "No token provided" });
@@ -18,7 +17,6 @@ const authMiddleware = (req, res, next) => {
   }
 };
 
-// 👉 Add Member (secured)
 router.post("/", authMiddleware, async (req, res) => {
   try {
     const { name, email, role } = req.body;
