@@ -1,12 +1,14 @@
-
 import User from "../models/User.js";
 import generateToken from "../utils/generateToken.js";
-import Member from "../models/Member.js"; 
+import Member from "../models/Member.js";
 import sendEmail from "../utils/sendEmail.js";
+import jwt from "jsonwebtoken"; // ✅ added
 
 const registerUser = async (req, res, next) => {
   try {
-    const { name, email, password, role } = req.body;
+    console.log("👉 Incoming signup body:", req.body);
+    const { name, email, password } = req.body;
+    const role = "member"; // default role
 
     const userExists = await User.findOne({ email });
     if (userExists) return res.status(400).json({ message: "User already exists" });
@@ -20,11 +22,14 @@ const registerUser = async (req, res, next) => {
       role,
     });
 
+    await member.save();
+
     user.member = member._id;
     await user.save();
+
     await sendEmail({
       to: user.email,
-      subject: "🎉 Welcome to Our App!",
+      subject: "🎉 Welcome to Alan Turing Club!",
       html: `<h2>Welcome, ${user.name}!</h2>
              <p>Your account is ready. Click below to login:</p>
              <a href="${process.env.FRONTEND_URL}/login">Login</a>`,
@@ -45,9 +50,16 @@ const loginUser = async (req, res, next) => {
     console.log("Request body:", req.body);
     const { email, password } = req.body;
     const user = await User.findOne({ email });
+
     if (user && (await user.matchPassword(password))) {
       res.json({
         token: generateToken(user._id),
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        },
       });
     } else {
       res.status(401).json({ message: "Invalid email or password" });
@@ -63,11 +75,10 @@ const forgotPassword = async (req, res, next) => {
     const user = await User.findOne({ email });
 
     if (!user) return res.status(404).json({ message: "User not found" });
-    const resetToken = jwt.sign(
-      { id: user._id },
-      process.env.JWT_SECRET,
-      { expiresIn: "15m" }
-    );
+
+    const resetToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "15m",
+    });
 
     const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
 
@@ -96,7 +107,7 @@ const resetPassword = async (req, res, next) => {
 
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    user.password = password; 
+    user.password = password; // will be hashed if User model has pre-save hook
     await user.save();
 
     res.json({ message: "Password reset successful" });
@@ -106,5 +117,3 @@ const resetPassword = async (req, res, next) => {
 };
 
 export { registerUser, loginUser, forgotPassword, resetPassword };
-
-

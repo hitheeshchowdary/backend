@@ -8,34 +8,28 @@ import memberRoutes from "./routes/memberRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import leaderBoard from "./routes/leaderboardRoutes.js";
 
-
-
 dotenv.config();
 
 const app = express();
-const allowedOrigins = ['*'];
+
+// ✅ Setup CORS properly
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
+  origin: "http://localhost:5173",   // your React app
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
 }));
 
 app.use(express.json());
 connectDB();
 
+// ✅ Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/events", eventRoutes);
 app.use("/api/members", memberRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/leaderboard", leaderBoard);
 
+// ✅ Test route
 app.get("/", (req, res) => {
   res.json({ message: "Backend running 🚀" });
 });
