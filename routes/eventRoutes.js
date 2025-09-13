@@ -4,7 +4,7 @@ import { protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.get("/allEvents", protect, getEvents);
+router.get("/allEvents", getEvents);
 router.get("/event/:id", protect, getEventById);
 router.post("/createEvent", protect, createEvent);
 router.post("/:id/register", protect, registerForEvent);
