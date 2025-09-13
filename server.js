@@ -28,6 +28,7 @@ app.use(cors({
 }));
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 connectDB();
 
 app.use("/api/auth", authRoutes);

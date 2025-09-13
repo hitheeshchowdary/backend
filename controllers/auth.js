@@ -3,6 +3,9 @@ import User from "../models/User.js";
 import generateToken from "../utils/generateToken.js";
 import Member from "../models/Member.js"; 
 import sendEmail from "../utils/sendEmail.js";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+dotenv.config();
 
 const registerUser = async (req, res, next) => {
   try {
