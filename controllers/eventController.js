@@ -10,7 +10,6 @@ const createEvent = async (req, res, next) => {
       date,
       time,
       location,
-      totalSeats,
       createdBy: req.user._id,
     });
 
@@ -49,16 +48,11 @@ const registerForEvent = async (req, res, next) => {
 
     if (!event) return res.status(404).json({ message: "Event not found" });
 
-    if (event.availableSeats <= 0) {
-      return res.status(400).json({ message: "No seats available" });
-    }
-
     if (event.registeredUsers.includes(req.user._id)) {
       return res.status(400).json({ message: "User already registered" });
     }
 
     event.registeredUsers.push(req.user._id);
-    event.availableSeats -= 1;
     await event.save();
 
     res.json({ message: "Registered successfully", event });
